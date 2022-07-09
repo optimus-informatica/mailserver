@@ -15,14 +15,12 @@ class CreateVirtualUsersTable extends Migration
     {
         Schema::create('virtual_users', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('virtual_domain_id')->constrained();
-	    $table->string('email', 150);
+            $table->foreignId('domain_id')->constrained('virtual_domains');
+            $table->string('email', 150);
             $table->string('password');
-            $table->string('home', 50);
-            $table->unsignedInteger('uid')->default(1000);
-	    $table->unsignedInteger('gid')->default(1000);
             $table->timestamps();
             $table->softDeletes();
+            $table->unique(['email', 'domain_id']);
         });
     }
 

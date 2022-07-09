@@ -16,36 +16,53 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        VirtualDomain::factory()->create(['name' => 'percapi.com.br']);
-
-        $emails = [
-            'adelmar@percapi.com.br',
-            'batista@percapi.com.br',
-            'celso@percapi.com.br',
-            'eliseo@percapi.com.br',
-            'francisco@percapi.com.br',
-            'italo@percapi.com.br',
-            'joao@percapi.com.br',
-            'jose.luiz@percapi.com.br',
-            'jovenilton@percapi.com.br',
-            'postmaster@percapi.com.br',
-            'percapi@percapi.com.br',
-            'rafael@percapi.com.br',
-            'roberto@percapi.com.br',
-            'sergio@percapi.com.br',
-            'ulisses@percapi.com.br',
-            'willian@percapi.com.br'
+        $password = Hash::make('password');
+        $datas = [
+            [
+                'domain' => [
+                    'name' => 'example.com',
+                    'home' => '/home/user/mail',
+                    'uid' => 1000,
+                    'gid' => 1000
+                ],
+                'accounts' => [
+                    [
+                        'email' => 'postmaster',
+                        'passwords' => [$password]
+                    ],
+                ],
+            ],
+            [
+                'domain' => [
+                    'name' => 'example.org',
+                    'home' => '/home/user2/mail',
+                    'uid' => 1001,
+                    'gid' => 1001
+                ],
+                'accounts' => [
+                    [
+                        'email' => 'postmaster',
+                        'passwords' => [$password]
+                    ],
+                ],
+            ]
         ];
 
-        $pwd = Hash::make('wgprVsVK');
-
-        foreach ($emails as $k => $email) {
-            VirtualUser::factory()->create([
-                'virtual_domain_id' => 1,
-                'home' => '/home/percapi/shared/mail',
-                'email' => $email,
-                'password' => $pwd
+        foreach ($datas as $data) {
+            $domain = VirtualDomain::factory()->create([
+                'name' => $data['domain'],
+                'home' => $data['home'],
+                'uid' => $data['uid'],
+                'gid' => $data['gid']
             ]);
+
+            foreach ($data['accounts'] as $account) {
+                VirtualUser::factory()->create([
+                    'virtual_domain_id' => $domain->id,
+                    'email' => $account['email'],
+                    'password' => $account['password'],
+                ]);
+            }
         }
     }
 }

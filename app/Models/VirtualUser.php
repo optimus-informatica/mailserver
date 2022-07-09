@@ -8,5 +8,5 @@ use Illuminate\Database\Eloquent\Model;
 class VirtualUser extends Model
 {
     use HasFactory;
-    protected $fillable = ['virtual_domain_id', 'email', 'password', 'home'];
+    protected $fillable = ['domain_id', 'email', 'password'];
 }
